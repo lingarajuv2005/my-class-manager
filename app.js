@@ -73,23 +73,70 @@ function addClass() {
 
 
 // Render UI
+  function render() {
+  const upcoming = document.getElementById("upcoming");
+  const history = document.getElementById("history");
   const timetable = document.getElementById("timetable");
+
+  if (upcoming) upcoming.innerHTML = "";
+  if (history) history.innerHTML = "";
   if (timetable) timetable.innerHTML = "";
 
+  const now = Date.now();
+  classes.sort((a, b) => a.time - b.time);
+
   classes.forEach((c, i) => {
+    const d = new Date(c.time);
+
+    // ---- TIME TABLE (ALL CLASSES) ----
     if (timetable) {
-      const d = new Date(c.time);
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${d.toLocaleDateString()}</td>
-        <td>${d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</td>
+        <td>${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
         <td>${c.t}</td>
         <td>${c.link ? `<a href="${c.link}" target="_blank">Join</a>` : "-"}</td>
         <td>${c.wa || "-"}</td>
       `;
       timetable.appendChild(tr);
     }
+
+    // ---- UPCOMING / HISTORY ----
+    if (c.time > now) {
+      if (upcoming) {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <b>${c.t}</b><br>
+          ${d.toLocaleString()}<br>
+          <a href="${c.link}" target="_blank">Join</a><br>
+          <button onclick="delClass(${i})">Delete</button>
+        `;
+        upcoming.appendChild(li);
+      }
+    } else {
+      if (history) {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <b>${c.t}</b><br>
+          ${d.toLocaleString()}<br>
+
+          <select onchange="setStatus(${i}, this.value)">
+            <option value="">-- Attendance --</option>
+            <option value="Attended" ${c.status === "Attended" ? "selected" : ""}>Attended</option>
+            <option value="Missed" ${c.status === "Missed" ? "selected" : ""}>Missed</option>
+          </select><br>
+
+          <textarea placeholder="Add notes..."
+            onblur="setNotes(${i}, this.value)">${c.notes || ""}</textarea><br>
+
+          <div>Status: ${c.status || "Not set"}</div>
+        `;
+        history.appendChild(li);
+      }
+    }
   });
+}
+
 
 
 // Set attendance
@@ -147,6 +194,7 @@ function clearAllClasses() {
     render();
   }
 }
+
 
 
 
