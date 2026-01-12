@@ -163,6 +163,16 @@ function logout() {
 
 load();
 
+function clearAllClasses() {
+  if (confirm("Are you sure you want to delete ALL classes?")) {
+    classes = [];
+    save();
+    render();
+  }
+}
+
+
+
 
 
 
