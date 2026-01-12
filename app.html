@@ -1,45 +1,45 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>My Class Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+
+    <!-- ================= TOP BAR ================= -->
     <header class="topbar">
-        <div class="title">My Class Manager</div>
+        <div class="title">📘 My Class Manager</div>
         <button class="logout-btn" onclick="logout()">Logout</button>
     </header>
 
-
+    <!-- ================= ADD CLASS ================= -->
     <section class="card">
         <h3>Add Class</h3>
 
-        <input id="title" placeholder="Class Name">
+        <input id="title" placeholder="Class Name" required>
 
-        <!-- DATE -->
         <label>Date</label>
         <input id="classDate" type="date" min="2024-01-01" max="2035-12-31" required>
 
-        <!-- START TIME -->
         <label>Start Time</label>
         <input id="startTime" type="time" required>
 
-        <!-- END TIME -->
         <label>End Time</label>
         <input id="endTime" type="time" required>
 
-        <input id="link" placeholder="Meeting Link">
+        <input id="link" placeholder="Meeting Link (optional)">
 
-        <input id="remind" type="number" placeholder="Reminder (min)" value="10" min="1">
+        <input id="remind" type="number" placeholder="Reminder (minutes)" value="10" min="1">
 
         <input id="wa" placeholder="WA Group Name (optional)">
 
-        <button type="button" onclick="addClass()">Add</button>
+        <button type="button" onclick="addClass()">➕ Add Class</button>
     </section>
 
-
+    <!-- ================= TIMETABLE ================= -->
     <section class="card">
         <h3>Time Table</h3>
 
@@ -48,39 +48,38 @@
                 <thead>
                     <tr>
                         <th>Date</th>
-                        <th>Time</th>
-                        <th>End Time</th>
+                        <th>Start</th>
+                        <th>End</th>
                         <th>Subject</th>
                         <th>Link</th>
                         <th>WA Group</th>
                     </tr>
                 </thead>
                 <tbody id="timetable">
-                    <!-- Rows will be added by app.js -->
+                    <!-- Filled by app.js -->
                 </tbody>
             </table>
         </div>
     </section>
 
-
-
-
+    <!-- ================= UPCOMING ================= -->
     <section class="card">
         <h3>Upcoming Classes</h3>
-        <ul id="upcoming"></ul>
+        <ul id="upcoming" class="list"></ul>
     </section>
 
+    <!-- ================= HISTORY ================= -->
     <section class="card">
         <h3>Past Classes (History)</h3>
-        <ul id="history"></ul>
+        <ul id="history" class="list"></ul>
     </section>
 
+    <!-- ================= ACTION ================= -->
+    <div style="text-align:center; margin-bottom:40px;">
+        <button class="danger-btn" onclick="clearAllClasses()">🗑 Delete All Classes</button>
+    </div>
 
-    <button onclick="clearAllClasses()">Delete All Classes</button>
-
-
-
-
+    <!-- ================= FIREBASE ================= -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
@@ -94,14 +93,13 @@
             appId: "1:963700423848:web:7d9cd3d07a88de8de9169d",
             measurementId: "G-L025TXYGK6"
         };
+
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
     </script>
 
-
-
+    <!-- ================= APP SCRIPT ================= -->
     <script src="app.js"></script>
 
 </body>
-
 </html>
