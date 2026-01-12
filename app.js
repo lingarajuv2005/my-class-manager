@@ -1,15 +1,16 @@
+// ================= FIREBASE CHECK =================
 if (typeof db === "undefined") {
   alert("Firebase not initialized. Check your firebaseConfig in app.html");
 }
 
-
-// Redirect if not logged in
+// ================= LOGIN CHECK =================
 if (localStorage.getItem("loggedIn") !== "yes") {
   window.location = "index.html";
 }
 
 let classes = [];
 
+// ================= SAVE & LOAD =================
 function save() {
   db.collection("users")
     .doc("Lingaraju")
@@ -29,31 +30,34 @@ function load() {
     });
 }
 
-
-// Add new class
+// ================= ADD CLASS =================
 function addClass() {
   const t = document.getElementById("title").value.trim();
-  const timeValue = document.getElementById("time").value;
+  const startValue = document.getElementById("startTime").value;
+  const endValue = document.getElementById("endTime").value;
   const link = document.getElementById("link").value.trim();
   const wa = document.getElementById("wa").value.trim();
   const r = parseInt(document.getElementById("remind").value || 10);
 
-  if (!t || !timeValue) {
-    alert("Please enter class name and time");
+  if (!t || !startValue || !endValue) {
+    alert("Please enter class name, start time and end time");
     return;
   }
 
-  const time = new Date(timeValue).getTime();
-  if (isNaN(time)) {
-    alert("Invalid date/time");
+  const startTime = new Date(startValue).getTime();
+  const endTime = new Date(endValue).getTime();
+
+  if (isNaN(startTime) || isNaN(endTime) || endTime <= startTime) {
+    alert("Invalid start/end time");
     return;
   }
 
   const obj = {
     t,
-    time,
+    startTime,
+    endTime,
     link,
-    wa,       // optional
+    wa,
     r,
     status: "",
     notes: ""
@@ -65,15 +69,15 @@ function addClass() {
   render();
 
   title.value = "";
-  time.value = "";
+  startTime.value = "";
+  endTime.value = "";
   link.value = "";
   wa.value = "";
   remind.value = "10";
 }
 
-
-// Render UI
-  function render() {
+// ================= RENDER UI =================
+function render() {
   const upcoming = document.getElementById("upcoming");
   const history = document.getElementById("history");
   const timetable = document.getElementById("timetable");
@@ -83,17 +87,19 @@ function addClass() {
   if (timetable) timetable.innerHTML = "";
 
   const now = Date.now();
-  classes.sort((a, b) => a.time - b.time);
+  classes.sort((a, b) => a.startTime - b.startTime);
 
   classes.forEach((c, i) => {
-    const d = new Date(c.time);
+    const start = new Date(c.startTime);
+    const end = new Date(c.endTime);
 
-    // ---- TIME TABLE (ALL CLASSES) ----
-    if (timetable) {
+    // ===== TIMETABLE (ONLY UPCOMING / ONGOING) =====
+    if (timetable && c.endTime > now) {
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td>${d.toLocaleDateString()}</td>
-        <td>${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+        <td>${start.toLocaleDateString()}</td>
+        <td>${start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+        <td>${end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
         <td>${c.t}</td>
         <td>${c.link ? `<a href="${c.link}" target="_blank">Join</a>` : "-"}</td>
         <td>${c.wa || "-"}</td>
@@ -101,24 +107,27 @@ function addClass() {
       timetable.appendChild(tr);
     }
 
-    // ---- UPCOMING / HISTORY ----
-    if (c.time > now) {
+    // ===== UPCOMING =====
+    if (c.startTime > now) {
       if (upcoming) {
         const li = document.createElement("li");
         li.innerHTML = `
           <b>${c.t}</b><br>
-          ${d.toLocaleString()}<br>
-          <a href="${c.link}" target="_blank">Join</a><br>
+          ${start.toLocaleString()} - ${end.toLocaleTimeString()}<br>
+          ${c.link ? `<a href="${c.link}" target="_blank">Join</a>` : ""}<br>
           <button onclick="delClass(${i})">Delete</button>
         `;
         upcoming.appendChild(li);
       }
-    } else {
+    }
+
+    // ===== HISTORY =====
+    if (c.endTime <= now) {
       if (history) {
         const li = document.createElement("li");
         li.innerHTML = `
           <b>${c.t}</b><br>
-          ${d.toLocaleString()}<br>
+          ${start.toLocaleString()} - ${end.toLocaleTimeString()}<br>
 
           <select onchange="setStatus(${i}, this.value)">
             <option value="">-- Attendance --</option>
@@ -137,22 +146,19 @@ function addClass() {
   });
 }
 
-
-
-// Set attendance
+// ================= ATTENDANCE & NOTES =================
 function setStatus(i, v) {
   classes[i].status = v;
   save();
   render();
 }
 
-// Save notes
 function setNotes(i, v) {
   classes[i].notes = v;
   save();
 }
 
-// Delete class
+// ================= DELETE =================
 function delClass(i) {
   if (confirm("Delete this class?")) {
     classes.splice(i, 1);
@@ -161,14 +167,13 @@ function delClass(i) {
   }
 }
 
-// Schedule notification
+// ================= NOTIFICATION =================
 function schedule(c) {
   if (!("Notification" in window)) return;
 
   Notification.requestPermission();
 
-  const diff = c.time - (c.r * 60000) - Date.now();
-
+  const diff = c.startTime - (c.r * 60000) - Date.now();
   if (diff > 0) {
     setTimeout(() => {
       new Notification("Class Reminder", {
@@ -178,28 +183,20 @@ function schedule(c) {
   }
 }
 
-// Logout
+// ================= LOGOUT =================
 function logout() {
   localStorage.removeItem("loggedIn");
   window.location = "index.html";
 }
 
-
-load();
-
+// ================= CLEAR ALL =================
 function clearAllClasses() {
-  if (confirm("Are you sure you want to delete ALL classes?")) {
+  if (confirm("Delete ALL classes?")) {
     classes = [];
     save();
     render();
   }
 }
 
-
-
-
-
-
-
-
-
+// ================= INIT =================
+load();
