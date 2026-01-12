@@ -35,6 +35,7 @@ function addClass() {
   const t = document.getElementById("title").value.trim();
   const timeValue = document.getElementById("time").value;
   const link = document.getElementById("link").value.trim();
+  const wa = document.getElementById("wa").value.trim();
   const r = parseInt(document.getElementById("remind").value || 10);
 
   if (!t || !timeValue) {
@@ -43,9 +44,8 @@ function addClass() {
   }
 
   const time = new Date(timeValue).getTime();
-
   if (isNaN(time)) {
-    alert("Invalid date/time. Please select properly.");
+    alert("Invalid date/time");
     return;
   }
 
@@ -53,9 +53,10 @@ function addClass() {
     t,
     time,
     link,
+    wa,       // optional
     r,
-    status: "",   // Attended / Missed
-    notes: ""     // After class notes
+    status: "",
+    notes: ""
   };
 
   classes.push(obj);
@@ -63,12 +64,13 @@ function addClass() {
   schedule(obj);
   render();
 
-  // Clear inputs
-  document.getElementById("title").value = "";
-  document.getElementById("time").value = "";
-  document.getElementById("link").value = "";
-  document.getElementById("remind").value = "10";
+  title.value = "";
+  time.value = "";
+  link.value = "";
+  wa.value = "";
+  remind.value = "10";
 }
+
 
 // Render UI
 function render() {
@@ -170,6 +172,7 @@ function clearAllClasses() {
     render();
   }
 }
+
 
 
 
