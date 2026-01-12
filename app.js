@@ -33,25 +33,30 @@ function load() {
 // ================= ADD CLASS =================
 function addClass() {
   const t = document.getElementById("title").value.trim();
-  const startValue = document.getElementById("startTime").value;
-  const endValue = document.getElementById("endTime").value;
+  const date = document.getElementById("classDate").value;
+  const startT = document.getElementById("startTime").value;
+  const endT = document.getElementById("endTime").value;
   const link = document.getElementById("link").value.trim();
   const wa = document.getElementById("wa").value.trim();
   const r = parseInt(document.getElementById("remind").value || 10);
 
-  if (!t || !startValue || !endValue) {
-    alert("Please enter class name, start time and end time");
+  // Check empty
+  if (!t || !date || !startT || !endT) {
+    alert("Please enter class name, date, start time and end time");
     return;
   }
 
-  const startTime = new Date(startValue).getTime();
-  const endTime = new Date(endValue).getTime();
+  // Combine date + time correctly
+  const startTime = new Date(`${date}T${startT}`).getTime();
+  const endTime = new Date(`${date}T${endT}`).getTime();
 
+  // Validate
   if (isNaN(startTime) || isNaN(endTime) || endTime <= startTime) {
     alert("Invalid start/end time");
     return;
   }
 
+  // Create class object
   const obj = {
     t,
     startTime,
@@ -63,17 +68,20 @@ function addClass() {
     notes: ""
   };
 
+  // Save
   classes.push(obj);
   save();
   schedule(obj);
   render();
 
-  title.value = "";
-  startTime.value = "";
-  endTime.value = "";
-  link.value = "";
-  wa.value = "";
-  remind.value = "10";
+  // Clear inputs
+  document.getElementById("title").value = "";
+  document.getElementById("classDate").value = "";
+  document.getElementById("startTime").value = "";
+  document.getElementById("endTime").value = "";
+  document.getElementById("link").value = "";
+  document.getElementById("wa").value = "";
+  document.getElementById("remind").value = "10";
 }
 
 // ================= RENDER UI =================
@@ -200,3 +208,4 @@ function clearAllClasses() {
 
 // ================= INIT =================
 load();
+
