@@ -24,18 +24,23 @@
 
     <section class="card">
         <h3>Time Table</h3>
-        <table width="100%" border="1" cellspacing="0" cellpadding="6">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Subject</th>
-                    <th>Link</th>
-                    <th>WA Group</th>
-                </tr>
-            </thead>
-            <tbody id="timetable"></tbody>
-        </table>
+
+        <div class="table-wrapper">
+            <table class="timetable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Subject</th>
+                        <th>Link</th>
+                        <th>WA Group</th>
+                    </tr>
+                </thead>
+                <tbody id="timetable">
+                    <!-- Rows will be added by app.js -->
+                </tbody>
+            </table>
+        </div>
     </section>
   
   <section class="card">
@@ -77,6 +82,7 @@
   
 </body>
 </html>
+
 
 
 
