@@ -12,9 +12,7 @@ let classes = [];
 
 // ================= SAVE & LOAD =================
 function save() {
-  db.collection("users")
-    .doc("Lingaraju")
-    .set({ classes: classes });
+  db.collection("users").doc("Lingaraju").set({ classes });
 }
 
 function load() {
@@ -40,23 +38,19 @@ function addClass() {
   const wa = document.getElementById("wa").value.trim();
   const r = parseInt(document.getElementById("remind").value || 10);
 
-  // Check empty
   if (!t || !date || !startT || !endT) {
-    alert("Please enter class name, date, start time and end time");
+    alert("Please fill all required fields");
     return;
   }
 
-  // Combine date + time correctly
   const startTime = new Date(`${date}T${startT}`).getTime();
   const endTime = new Date(`${date}T${endT}`).getTime();
 
-  // Validate
   if (isNaN(startTime) || isNaN(endTime) || endTime <= startTime) {
-    alert("Invalid start/end time");
+    alert("Invalid time range");
     return;
   }
 
-  // Create class object
   const obj = {
     t,
     startTime,
@@ -68,19 +62,15 @@ function addClass() {
     notes: ""
   };
 
-  // Save
   classes.push(obj);
   save();
   schedule(obj);
   render();
 
-  // Clear inputs
-  document.getElementById("title").value = "";
-  document.getElementById("classDate").value = "";
-  document.getElementById("startTime").value = "";
-  document.getElementById("endTime").value = "";
-  document.getElementById("link").value = "";
-  document.getElementById("wa").value = "";
+  // clear inputs
+  ["title", "classDate", "startTime", "endTime", "link", "wa"].forEach(id => {
+    document.getElementById(id).value = "";
+  });
   document.getElementById("remind").value = "10";
 }
 
@@ -90,9 +80,9 @@ function render() {
   const history = document.getElementById("history");
   const timetable = document.getElementById("timetable");
 
-  if (upcoming) upcoming.innerHTML = "";
-  if (history) history.innerHTML = "";
-  if (timetable) timetable.innerHTML = "";
+  upcoming.innerHTML = "";
+  history.innerHTML = "";
+  timetable.innerHTML = "";
 
   const now = Date.now();
   classes.sort((a, b) => a.startTime - b.startTime);
@@ -101,13 +91,13 @@ function render() {
     const start = new Date(c.startTime);
     const end = new Date(c.endTime);
 
-    // ===== TIMETABLE (ONLY UPCOMING / ONGOING) =====
-    if (timetable && c.endTime > now) {
+    // ===== TIMETABLE (UPCOMING + ONGOING) =====
+    if (c.endTime > now) {
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${start.toLocaleDateString()}</td>
-        <td>${start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
-        <td>${end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+        <td>${start.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</td>
+        <td>${end.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</td>
         <td>${c.t}</td>
         <td>${c.link ? `<a href="${c.link}" target="_blank">Join</a>` : "-"}</td>
         <td>${c.wa || "-"}</td>
@@ -115,41 +105,37 @@ function render() {
       timetable.appendChild(tr);
     }
 
-    // ===== UPCOMING =====
+    // ===== UPCOMING ONLY =====
     if (c.startTime > now) {
-      if (upcoming) {
-        const li = document.createElement("li");
-        li.innerHTML = `
-          <b>${c.t}</b><br>
-          ${start.toLocaleString()} - ${end.toLocaleTimeString()}<br>
-          ${c.link ? `<a href="${c.link}" target="_blank">Join</a>` : ""}<br>
-          <button onclick="delClass(${i})">Delete</button>
-        `;
-        upcoming.appendChild(li);
-      }
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <b>${c.t}</b><br>
+        ${start.toLocaleString()} - ${end.toLocaleTimeString()}<br>
+        ${c.link ? `<a href="${c.link}" target="_blank">Join</a><br>` : ""}
+        <button onclick="delClass(${i})">Delete</button>
+      `;
+      upcoming.appendChild(li);
     }
 
     // ===== HISTORY =====
     if (c.endTime <= now) {
-      if (history) {
-        const li = document.createElement("li");
-        li.innerHTML = `
-          <b>${c.t}</b><br>
-          ${start.toLocaleString()} - ${end.toLocaleTimeString()}<br>
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <b>${c.t}</b><br>
+        ${start.toLocaleString()} - ${end.toLocaleTimeString()}<br>
 
-          <select onchange="setStatus(${i}, this.value)">
-            <option value="">-- Attendance --</option>
-            <option value="Attended" ${c.status === "Attended" ? "selected" : ""}>Attended</option>
-            <option value="Missed" ${c.status === "Missed" ? "selected" : ""}>Missed</option>
-          </select><br>
+        <select onchange="setStatus(${i}, this.value)">
+          <option value="">-- Attendance --</option>
+          <option value="Attended" ${c.status === "Attended" ? "selected" : ""}>Attended</option>
+          <option value="Missed" ${c.status === "Missed" ? "selected" : ""}>Missed</option>
+        </select><br>
 
-          <textarea placeholder="Add notes..."
-            onblur="setNotes(${i}, this.value)">${c.notes || ""}</textarea><br>
+        <textarea placeholder="Add notes..." 
+          onblur="setNotes(${i}, this.value)">${c.notes || ""}</textarea>
 
-          <div>Status: ${c.status || "Not set"}</div>
-        `;
-        history.appendChild(li);
-      }
+        <div>Status: ${c.status || "Not set"}</div>
+      `;
+      history.appendChild(li);
     }
   });
 }
@@ -181,13 +167,15 @@ function schedule(c) {
 
   Notification.requestPermission();
 
-  const diff = c.startTime - (c.r * 60000) - Date.now();
-  if (diff > 0) {
+  const notifyAt = c.startTime - c.r * 60000;
+  const delay = notifyAt - Date.now();
+
+  if (delay > 0) {
     setTimeout(() => {
       new Notification("Class Reminder", {
-        body: c.t + " starts in " + c.r + " minutes"
+        body: `${c.t} starts in ${c.r} minutes`
       });
-    }, diff);
+    }, delay);
   }
 }
 
@@ -208,4 +196,3 @@ function clearAllClasses() {
 
 // ================= INIT =================
 load();
-
