@@ -1,10 +1,11 @@
 body {
   margin: 0;
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   background: #0f172a;
   color: #e5e7eb;
 }
 
+/* Centered login page */
 .center {
   display: flex;
   height: 100vh;
@@ -12,6 +13,7 @@ body {
   justify-content: center;
 }
 
+/* Top Header Bar */
 .topbar {
   display: flex;
   align-items: center;
@@ -19,6 +21,7 @@ body {
   position: relative;
   padding: 15px 20px;
   background: #020617;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
 }
 
 .topbar .title {
@@ -27,6 +30,7 @@ body {
   color: #e5e7eb;
 }
 
+/* Logout Button (Top Right) */
 .logout-btn {
   position: absolute;
   right: 20px;
@@ -39,42 +43,159 @@ body {
   border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
+  width: auto;
 }
 
-
-header {
-  display: flex;
-  justify-content: space-between;
-  padding: 15px;
-  background: #020617;
-}
-
+/* Cards */
 .card {
   background: #020617;
   margin: 15px;
   padding: 15px;
   border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 }
 
-input, button {
+/* Inputs and Buttons */
+input, textarea, button, select {
   width: 100%;
   padding: 8px;
-  margin: 5px 0;
+  margin: 6px 0;
   border-radius: 6px;
   border: none;
+  outline: none;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 60px;
 }
 
 button {
   background: #22c55e;
-  color: black;
+  color: #000;
   font-weight: bold;
+  cursor: pointer;
 }
 
+button:hover {
+  opacity: 0.9;
+}
+
+/* Lists */
 li {
   list-style: none;
   margin-bottom: 10px;
-  padding: 8px;
+  padding: 10px;
   background: #0f172a;
   border-radius: 8px;
 }
 
+/* Links */
+a {
+  color: #60a5fa;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Timetable Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th, td {
+  border: 1px solid #334155;
+  padding: 8px;
+  text-align: center;
+}
+
+th {
+  background: #020617;
+  color: #e5e7eb;
+  font-weight: bold;
+}
+
+td {
+  background: #0f172a;
+}
+
+tr:hover td {
+  background: #1e293b;
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.timetable {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px; /* allows horizontal scroll on phone */
+  background: #020617;
+  color: #e5e7eb;
+}
+
+.timetable th,
+.timetable td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #1e293b;
+}
+
+.timetable th {
+  background: #0f172a;
+  font-weight: bold;
+}
+
+.timetable a {
+  color: #22c55e;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+
+/* Mobile / Phone View */
+@media (max-width: 600px) {
+
+  .topbar {
+    padding: 12px 10px;
+  }
+
+  .topbar .title {
+    font-size: 18px;
+  }
+
+  .logout-btn {
+    right: 10px;
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+
+  .card {
+    margin: 10px;
+    padding: 12px;
+  }
+
+  input, textarea, button, select {
+    font-size: 14px;
+    padding: 7px;
+  }
+
+  table {
+    font-size: 12px;
+  }
+
+  th, td {
+    padding: 6px 4px;
+  }
+
+  /* Make table scrollable on small screens */
+  .table-wrapper {
+    overflow-x: auto;
+  }
+}
