@@ -1,26 +1,44 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <title>My Class Manager</title>
-  <link rel="stylesheet" href="style.css">
+    <title>My Class Manager</title>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-  <header class="topbar">
+    <header class="topbar">
         <div class="title">My Class Manager</div>
         <button class="logout-btn" onclick="logout()">Logout</button>
     </header>
 
-  <section class="card">
-    <h3>Add Class</h3>
-    <input id="title" placeholder="Class Name">
-    <input id="time" type="datetime-local"
-       min="2024-01-01T00:00"
-       max="2035-12-31T23:59">
-    <input id="link" placeholder="Meeting Link">
-    <input id="remind" type="number" placeholder="Reminder (min)" value="10">
-    <input id="wa" placeholder="WA Group Name (optional)">
-    <button type="button" onclick="addClass()">Add</button>
-  </section>
+
+    <section class="card">
+        <h3>Add Class</h3>
+
+        <input id="title" placeholder="Class Name">
+
+        <!-- DATE -->
+        <label>Date</label>
+        <input id="classDate" type="date" min="2024-01-01" max="2035-12-31" required>
+
+        <!-- START TIME -->
+        <label>Start Time</label>
+        <input id="startTime" type="time" required>
+
+        <!-- END TIME -->
+        <label>End Time</label>
+        <input id="endTime" type="time" required>
+
+        <input id="link" placeholder="Meeting Link">
+
+        <input id="remind" type="number" placeholder="Reminder (min)" value="10" min="1">
+
+        <input id="wa" placeholder="WA Group Name (optional)">
+
+        <button type="button" onclick="addClass()">Add</button>
+    </section>
+
 
     <section class="card">
         <h3>Time Table</h3>
@@ -31,6 +49,7 @@
                     <tr>
                         <th>Date</th>
                         <th>Time</th>
+                        <th>End Time</th>
                         <th>Subject</th>
                         <th>Link</th>
                         <th>WA Group</th>
@@ -42,48 +61,47 @@
             </table>
         </div>
     </section>
-  
-  <section class="card">
-    <h3>Upcoming Classes</h3>
-    <ul id="upcoming"></ul>
-  </section>
-  
-  <section class="card">
-    <h3>Past Classes (History)</h3>
-    <ul id="history"></ul>
-  </section>
-
-
-  <button onclick="clearAllClasses()">Delete All Classes</button>
 
 
 
 
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <section class="card">
+        <h3>Upcoming Classes</h3>
+        <ul id="upcoming"></ul>
+    </section>
 
-  <script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyD5QjKnUoR_U-aUSL-Oc87QaiNpoTw8BF0",
-        authDomain: "myclassmanager-96594.firebaseapp.com",
-        projectId: "myclassmanager-96594",
-        storageBucket: "myclassmanager-96594.firebasestorage.app",
-        messagingSenderId: "963700423848",
-        appId: "1:963700423848:web:7d9cd3d07a88de8de9169d",
-        measurementId: "G-L025TXYGK6"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-  </script>
+    <section class="card">
+        <h3>Past Classes (History)</h3>
+        <ul id="history"></ul>
+    </section>
+
+
+    <button onclick="clearAllClasses()">Delete All Classes</button>
 
 
 
-  <script src="app.js"></script>
-  
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyD5QjKnUoR_U-aUSL-Oc87QaiNpoTw8BF0",
+            authDomain: "myclassmanager-96594.firebaseapp.com",
+            projectId: "myclassmanager-96594",
+            storageBucket: "myclassmanager-96594.firebasestorage.app",
+            messagingSenderId: "963700423848",
+            appId: "1:963700423848:web:7d9cd3d07a88de8de9169d",
+            measurementId: "G-L025TXYGK6"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+    </script>
+
+
+
+    <script src="app.js"></script>
+
 </body>
+
 </html>
-
-
-
-
-
