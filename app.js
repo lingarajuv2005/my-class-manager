@@ -1,3 +1,6 @@
+if (typeof db === "undefined") {
+  alert("Firebase not initialized. Check your firebaseConfig in app.html");
+}
 
 
 // Redirect if not logged in
@@ -159,6 +162,7 @@ function logout() {
 
 
 load();
+
 
 
 
