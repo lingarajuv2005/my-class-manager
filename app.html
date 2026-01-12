@@ -18,10 +18,26 @@
        max="2035-12-31T23:59">
     <input id="link" placeholder="Meeting Link">
     <input id="remind" type="number" placeholder="Reminder (min)" value="10">
+    <input id="wa" placeholder="WA Group Name (optional)">
     <button type="button" onclick="addClass()">Add</button>
-
   </section>
 
+    <section class="card">
+        <h3>Time Table</h3>
+        <table width="100%" border="1" cellspacing="0" cellpadding="6">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Subject</th>
+                    <th>Link</th>
+                    <th>WA Group</th>
+                </tr>
+            </thead>
+            <tbody id="timetable"></tbody>
+        </table>
+    </section>
+  
   <section class="card">
     <h3>Upcoming Classes</h3>
     <ul id="upcoming"></ul>
@@ -61,5 +77,6 @@
   
 </body>
 </html>
+
 
 
